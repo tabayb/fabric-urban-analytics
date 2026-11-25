@@ -218,3 +218,27 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+# Local development files
+.vscode/
+.work-folder-info
+
+# Secrets
+.env
+.env.*
+!.env.example
+secrets/
+*.pem
+*.key
+
+# Notebook checkpoints and backups
+.ipynb_checkpoints/
+*backup*.ipynb
+
+# Windows download metadata
+*:Zone.Identifier
+
+# Fabric VS Code stubs
+.stubs/
+
+# Fabric virtual filesystem metadata
+.vfsmeta/
