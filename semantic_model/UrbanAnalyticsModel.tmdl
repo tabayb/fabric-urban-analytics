@@ -1,0 +1,762 @@
+createOrReplace
+
+	model Model
+		culture: en-US
+		collation: Latin1_General_100_BIN2_UTF8
+		defaultPowerBIDataSourceVersion: powerBI_V3
+		sourceQueryCulture: en-US
+		dataAccessOptions
+			legacyRedirects
+			returnErrorValuesAsNull
+
+		table DimDate
+			lineageTag: 323f7f28-a53e-4491-812c-4a9072739eab
+			sourceLineageTag: [dbo].[DimDate]
+
+			column date
+				dataType: dateTime
+				formatString: General Date
+				sourceProviderType: date
+				lineageTag: 2b14386e-7bfb-4b20-9008-bf5ef27529d9
+				sourceLineageTag: date
+				summarizeBy: none
+				sourceColumn: date
+
+				annotation SummarizationSetBy = Automatic
+
+			column DateKey
+				dataType: int64
+				formatString: 0
+				sourceProviderType: int
+				lineageTag: 5bf13015-f1e0-46e3-955a-ab38f7c6bb67
+				sourceLineageTag: DateKey
+				summarizeBy: count
+				sourceColumn: DateKey
+
+				annotation SummarizationSetBy = Automatic
+
+			column Year
+				dataType: int64
+				formatString: 0
+				sourceProviderType: int
+				lineageTag: e1d87853-9b0f-4fb9-ad64-2883335359f4
+				sourceLineageTag: Year
+				summarizeBy: sum
+				sourceColumn: Year
+
+				annotation SummarizationSetBy = Automatic
+
+			column Month
+				dataType: int64
+				formatString: 0
+				sourceProviderType: int
+				lineageTag: f5598b68-31a2-496f-be87-86e4d57a955e
+				sourceLineageTag: Month
+				summarizeBy: sum
+				sourceColumn: Month
+
+				annotation SummarizationSetBy = Automatic
+
+			column Quarter
+				dataType: int64
+				formatString: 0
+				sourceProviderType: int
+				lineageTag: e500750b-e52a-4faa-9fe1-87f893b9454a
+				sourceLineageTag: Quarter
+				summarizeBy: sum
+				sourceColumn: Quarter
+
+				annotation SummarizationSetBy = Automatic
+
+			column DayOfWeek
+				dataType: int64
+				formatString: 0
+				sourceProviderType: int
+				lineageTag: 518b98fe-29df-42df-9d07-73b3104ad662
+				sourceLineageTag: DayOfWeek
+				summarizeBy: sum
+				sourceColumn: DayOfWeek
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsWeekend
+				dataType: boolean
+				formatString: """TRUE"";""TRUE"";""FALSE"""
+				sourceProviderType: bit
+				lineageTag: a419d2a2-db65-4ec8-bfed-a67087f17c80
+				sourceLineageTag: IsWeekend
+				summarizeBy: none
+				sourceColumn: IsWeekend
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthName
+				dataType: string
+				sourceProviderType: varchar(8000)
+				lineageTag: 27c21afb-ebdd-49a2-8eb0-89f4a2086034
+				sourceLineageTag: MonthName
+				summarizeBy: none
+				sourceColumn: MonthName
+
+				annotation SummarizationSetBy = Automatic
+
+			column DayName
+				dataType: string
+				sourceProviderType: varchar(8000)
+				lineageTag: 07a42aae-e5ad-4586-b339-063ae4a6d31f
+				sourceLineageTag: DayName
+				summarizeBy: none
+				sourceColumn: DayName
+
+				annotation SummarizationSetBy = Automatic
+
+			partition DimDate = entity
+				mode: directLake
+				source
+					entityName: DimDate
+					schemaName: dbo
+					expressionSource: DatabaseQuery
+
+			annotation PBI_ResultType = Table
+
+		table DimZone
+			lineageTag: 78923e51-4e71-41d0-8a70-9b989c8f585f
+			sourceLineageTag: [dbo].[DimZone]
+
+			column LocationID
+				dataType: int64
+				formatString: 0
+				sourceProviderType: int
+				lineageTag: 9bc0524b-4ac7-4ffa-8227-2af0a1c3b89b
+				sourceLineageTag: LocationID
+				summarizeBy: none
+				sourceColumn: LocationID
+
+				annotation SummarizationSetBy = Automatic
+
+			column Borough
+				dataType: string
+				sourceProviderType: varchar(8000)
+				lineageTag: 332546a5-527c-4fc1-96fc-90d8bf160a74
+				sourceLineageTag: Borough
+				summarizeBy: none
+				sourceColumn: Borough
+
+				annotation SummarizationSetBy = Automatic
+
+			column Zone
+				dataType: string
+				sourceProviderType: varchar(8000)
+				lineageTag: c3c8d1f6-ce30-4f48-9a44-a4e96756f312
+				sourceLineageTag: Zone
+				summarizeBy: none
+				sourceColumn: Zone
+
+				annotation SummarizationSetBy = Automatic
+
+			column service_zone
+				dataType: string
+				sourceProviderType: varchar(8000)
+				lineageTag: a5c5f669-d085-4786-a8f4-573562773eb5
+				sourceLineageTag: service_zone
+				summarizeBy: none
+				sourceColumn: service_zone
+
+				annotation SummarizationSetBy = Automatic
+
+			partition DimZone = entity
+				mode: directLake
+				source
+					entityName: DimZone
+					schemaName: dbo
+					expressionSource: DatabaseQuery
+
+			annotation PBI_ResultType = Table
+
+		table FactTaxiDaily
+			lineageTag: aa90fe90-6598-4f36-a4cc-99a71f5c6311
+			sourceLineageTag: [dbo].[FactTaxiDaily]
+
+			measure 'Avg Revenue per Trip USD' =
+					
+					DIVIDE(
+					    SUM(FactTaxiDaily[total_amount_usd]),
+					    SUM(FactTaxiDaily[daily_trips])
+					)
+				formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+				lineageTag: 656434b1-89f7-44cb-b9fe-392710e53f8f
+
+				changedProperty = Name
+
+				changedProperty = FormatString
+
+				annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+			measure 'Avg Revenue per Trip EUR' =
+					
+					DIVIDE(
+					    SUM(FactTaxiDaily[total_amount_eur]),
+					    SUM(FactTaxiDaily[daily_trips])
+					)
+				formatString: "€"\ #,0.00;-"€"\ #,0.00;"€"\ #,0.00
+				lineageTag: 4c79e6f3-8ff1-4329-a097-9065a2d2abd1
+
+				changedProperty = Name
+
+				changedProperty = FormatString
+
+			measure 'FX Impact %' =
+					
+					VAR RevenueUSD =
+					    SUM(FactTaxiDaily[total_amount_usd])
+					
+					VAR RevenueEUR =
+					    SUM(FactTaxiDaily[total_amount_eur])
+					
+					VAR BaseRate =
+					    CALCULATE(
+					        MAXX(
+					            TOPN(
+					                1,
+					                DimFX,
+					                DimFX[rate_date],
+					                ASC
+					            ),
+					            DimFX[usd_per_eur]
+					        ),
+					        REMOVEFILTERS(DimDate),
+					        REMOVEFILTERS(DimFX)
+					    )
+					
+					VAR FixedEUR =
+					    DIVIDE(RevenueUSD, BaseRate)
+					
+					RETURN
+					    DIVIDE(
+					        RevenueEUR - FixedEUR,
+					        FixedEUR
+					    )
+				formatString: 0.00%;-0.00%;0.00%
+				lineageTag: e4f424a0-0ec5-4d5e-a7da-14920e26e10b
+
+				changedProperty = Name
+
+				changedProperty = FormatString
+
+			measure 'Correlation Taxi PM25' =
+					
+					VAR DailyData =
+					    ADDCOLUMNS(
+					        FILTER(
+					            VALUES(DimDate[date]),
+					            NOT ISBLANK(DimDate[date])
+					        ),
+					        "Trips", CALCULATE(SUM(FactTaxiDaily[daily_trips])),
+					        "PM25", [Avg PM25]
+					    )
+					
+					VAR ValidData =
+					    FILTER(
+					        DailyData,
+					        NOT ISBLANK([Trips]) &&
+					        NOT ISBLANK([PM25])
+					    )
+					
+					VAR MeanX = AVERAGEX(ValidData, [Trips])
+					VAR MeanY = AVERAGEX(ValidData, [PM25])
+					
+					VAR Numerator =
+					    SUMX(
+					        ValidData,
+					        ([Trips] - MeanX) * ([PM25] - MeanY)
+					    )
+					
+					VAR Denominator =
+					    SQRT(
+					        SUMX(ValidData, ([Trips] - MeanX)^2) *
+					        SUMX(ValidData, ([PM25] - MeanY)^2)
+					    )
+					
+					RETURN
+					    DIVIDE(Numerator, Denominator)
+				lineageTag: d1d94b0b-3047-4729-b882-25cd171139a4
+
+				changedProperty = Name
+
+				annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			measure 'Correlation Taxi NO2' =
+					
+					VAR DailyData =
+					    ADDCOLUMNS(
+					        FILTER(
+					            VALUES(DimDate[date]),
+					            NOT ISBLANK(DimDate[date])
+					        ),
+					        "Trips", CALCULATE(SUM(FactTaxiDaily[daily_trips])),
+					        "NO2", [Avg NO2]
+					    )
+					
+					VAR ValidData =
+					    FILTER(
+					        DailyData,
+					        NOT ISBLANK([Trips]) &&
+					        NOT ISBLANK([NO2])
+					    )
+					
+					VAR MeanX = AVERAGEX(ValidData, [Trips])
+					VAR MeanY = AVERAGEX(ValidData, [NO2])
+					
+					VAR Numerator =
+					    SUMX(
+					        ValidData,
+					        ([Trips] - MeanX) * ([NO2] - MeanY)
+					    )
+					
+					VAR Denominator =
+					    SQRT(
+					        SUMX(ValidData, ([Trips] - MeanX)^2) *
+					        SUMX(ValidData, ([NO2] - MeanY)^2)
+					    )
+					
+					RETURN
+					    DIVIDE(Numerator, Denominator)
+				lineageTag: d58e90c5-44e1-4984-b935-4fbd96bd4de4
+
+				changedProperty = Name
+
+				annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			column trip_date
+				dataType: dateTime
+				formatString: General Date
+				sourceProviderType: date
+				lineageTag: 8e84b6cf-0911-45eb-9626-505380aff0f7
+				sourceLineageTag: trip_date
+				summarizeBy: none
+				sourceColumn: trip_date
+
+				annotation SummarizationSetBy = Automatic
+
+			column PULocationID
+				dataType: int64
+				formatString: 0
+				sourceProviderType: int
+				lineageTag: acb481de-0923-4499-9f37-eb44aaaed005
+				sourceLineageTag: PULocationID
+				summarizeBy: none
+				sourceColumn: PULocationID
+
+				annotation SummarizationSetBy = Automatic
+
+			column daily_trips
+				dataType: int64
+				formatString: 0
+				sourceProviderType: bigint
+				lineageTag: e18f06a5-3af9-4348-abf2-e9b2524ce92f
+				sourceLineageTag: daily_trips
+				summarizeBy: sum
+				sourceColumn: daily_trips
+
+				annotation SummarizationSetBy = Automatic
+
+			column total_amount_usd
+				dataType: double
+				sourceProviderType: decimal(18, 2)
+				lineageTag: 9cd09335-b1ed-48e0-8a2a-252f34423875
+				sourceLineageTag: total_amount_usd
+				summarizeBy: sum
+				sourceColumn: total_amount_usd
+
+				annotation SummarizationSetBy = Automatic
+
+				annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			column avg_fare_usd
+				dataType: double
+				sourceProviderType: float
+				lineageTag: 5b0d3be6-9ca6-41e4-94ad-d6a93eb99c7f
+				sourceLineageTag: avg_fare_usd
+				summarizeBy: sum
+				sourceColumn: avg_fare_usd
+
+				annotation SummarizationSetBy = Automatic
+
+				annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			column avg_duration_minutes
+				dataType: double
+				sourceProviderType: float
+				lineageTag: 5c453fb3-7f24-4c4a-b7b3-f3ffa833fc58
+				sourceLineageTag: avg_duration_minutes
+				summarizeBy: sum
+				sourceColumn: avg_duration_minutes
+
+				annotation SummarizationSetBy = Automatic
+
+				annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			column positive_charged_amount_usd
+				dataType: double
+				sourceProviderType: decimal(18, 2)
+				lineageTag: 10111c11-a4e3-40a8-a02c-944624d1bf45
+				sourceLineageTag: positive_charged_amount_usd
+				summarizeBy: sum
+				sourceColumn: positive_charged_amount_usd
+
+				annotation SummarizationSetBy = Automatic
+
+				annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			column total_amount_eur
+				dataType: double
+				sourceProviderType: decimal(18, 2)
+				lineageTag: eb52a465-416e-41bc-84f6-a60ef8229965
+				sourceLineageTag: total_amount_eur
+				summarizeBy: sum
+				sourceColumn: total_amount_eur
+
+				annotation SummarizationSetBy = Automatic
+
+				annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			column positive_charged_amount_eur
+				dataType: double
+				sourceProviderType: decimal(18, 2)
+				lineageTag: 6dc2ad1f-28cb-4a49-80b8-2213e1755992
+				sourceLineageTag: positive_charged_amount_eur
+				summarizeBy: sum
+				sourceColumn: positive_charged_amount_eur
+
+				annotation SummarizationSetBy = Automatic
+
+				annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			partition FactTaxiDaily = entity
+				mode: directLake
+				source
+					entityName: FactTaxiDaily
+					schemaName: dbo
+					expressionSource: DatabaseQuery
+
+			annotation PBI_ResultType = Table
+
+		table FactAirQualityDaily
+			lineageTag: beca9e53-560f-49ac-87b3-4aed2a5de5ab
+			sourceLineageTag: [dbo].[FactAirQualityDaily]
+
+			measure 'Avg PM25' =
+					
+					AVERAGE(FactAirQualityDaily[avg_pm25])
+				lineageTag: c0be2917-cf98-440f-aa49-7e7fccf32cf9
+
+				changedProperty = Name
+
+				annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			column measurement_date
+				dataType: dateTime
+				formatString: General Date
+				sourceProviderType: date
+				lineageTag: c5821073-e15c-4fc3-b618-86477ce9fc90
+				sourceLineageTag: measurement_date
+				summarizeBy: none
+				sourceColumn: measurement_date
+
+				annotation SummarizationSetBy = Automatic
+
+			column sensor_id
+				dataType: int64
+				formatString: 0
+				sourceProviderType: int
+				lineageTag: f9e88a6c-fde3-479a-8d05-a070481c508b
+				sourceLineageTag: sensor_id
+				summarizeBy: sum
+				sourceColumn: sensor_id
+
+				annotation SummarizationSetBy = Automatic
+
+			column avg_pm25
+				dataType: double
+				formatString: 0.00
+				sourceProviderType: float
+				lineageTag: 4b4affca-65ab-4785-927f-58399fb3150a
+				sourceLineageTag: avg_pm25
+				summarizeBy: sum
+				sourceColumn: avg_pm25
+
+				changedProperty = FormatString
+
+				annotation SummarizationSetBy = Automatic
+
+			column measurement_count
+				dataType: int64
+				formatString: 0
+				sourceProviderType: bigint
+				lineageTag: 6144890b-98e2-43bd-aec8-1cd654960500
+				sourceLineageTag: measurement_count
+				summarizeBy: sum
+				sourceColumn: measurement_count
+
+				annotation SummarizationSetBy = Automatic
+
+			partition FactAirQualityDaily = entity
+				mode: directLake
+				source
+					entityName: FactAirQualityDaily
+					schemaName: dbo
+					expressionSource: DatabaseQuery
+
+			annotation PBI_ResultType = Table
+
+		table FactNO2Daily
+			lineageTag: 9a43ec3e-0415-4929-8248-e86e287860fd
+			sourceLineageTag: [dbo].[FactNO2Daily]
+
+			measure 'Avg NO2' =
+					
+					AVERAGE(FactNO2Daily[avg_no2_ppm])
+				formatString: 0.00
+				lineageTag: 78add0bf-8ade-4eb8-9124-b426e310ed55
+
+				changedProperty = Name
+
+				changedProperty = FormatString
+
+			column measurement_date
+				dataType: dateTime
+				formatString: General Date
+				sourceProviderType: date
+				lineageTag: 91d7836a-0000-4e90-ae9b-33fcfff28c62
+				sourceLineageTag: measurement_date
+				summarizeBy: none
+				sourceColumn: measurement_date
+
+				annotation SummarizationSetBy = Automatic
+
+			column avg_no2_ppm
+				dataType: double
+				sourceProviderType: float
+				lineageTag: daf62bca-39a5-4faf-bb15-1d2c451559fb
+				sourceLineageTag: avg_no2_ppm
+				summarizeBy: sum
+				sourceColumn: avg_no2_ppm
+
+				annotation SummarizationSetBy = Automatic
+
+				annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			column max_no2_ppm
+				dataType: double
+				sourceProviderType: float
+				lineageTag: f501172e-fb20-433d-9736-8363d2ba4621
+				sourceLineageTag: max_no2_ppm
+				summarizeBy: sum
+				sourceColumn: max_no2_ppm
+
+				annotation SummarizationSetBy = Automatic
+
+				annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			column measurement_count
+				dataType: int64
+				formatString: 0
+				sourceProviderType: bigint
+				lineageTag: 9a8acd95-ca58-4c2f-9592-6791ac2077cd
+				sourceLineageTag: measurement_count
+				summarizeBy: sum
+				sourceColumn: measurement_count
+
+				annotation SummarizationSetBy = Automatic
+
+			partition FactNO2Daily = entity
+				mode: directLake
+				source
+					entityName: FactNO2Daily
+					schemaName: dbo
+					expressionSource: DatabaseQuery
+
+			annotation PBI_ResultType = Table
+
+		table DimFX
+			lineageTag: 13da85ca-b6f4-4858-8019-ace364c85144
+			sourceLineageTag: [dbo].[DimFX]
+
+			column rate_date
+				dataType: dateTime
+				formatString: General Date
+				sourceProviderType: date
+				lineageTag: 44ab0a91-6891-4124-9276-9d616331ed58
+				sourceLineageTag: rate_date
+				summarizeBy: none
+				sourceColumn: rate_date
+
+				annotation SummarizationSetBy = Automatic
+
+			column usd_per_eur
+				dataType: double
+				sourceProviderType: float
+				lineageTag: 341afdd0-4ffc-4c29-9f5f-fcb280e99b65
+				sourceLineageTag: usd_per_eur
+				summarizeBy: sum
+				sourceColumn: usd_per_eur
+
+				annotation SummarizationSetBy = Automatic
+
+				annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			partition DimFX = entity
+				mode: directLake
+				source
+					entityName: DimFX
+					schemaName: dbo
+					expressionSource: DatabaseQuery
+
+			annotation PBI_ResultType = Table
+
+		table DimGDP
+			lineageTag: 55d62956-5000-49b0-b136-c1fd926aa238
+			sourceLineageTag: [dbo].[DimGDP]
+
+			column country
+				dataType: string
+				sourceProviderType: varchar(8000)
+				lineageTag: c22a4b3d-2187-44f8-8fb5-bcf823487032
+				sourceLineageTag: country
+				summarizeBy: none
+				sourceColumn: country
+
+				annotation SummarizationSetBy = Automatic
+
+			column year
+				dataType: int64
+				formatString: 0
+				sourceProviderType: int
+				lineageTag: e18de5c6-b072-4575-bd6c-81bf5461f8b6
+				sourceLineageTag: year
+				summarizeBy: sum
+				sourceColumn: year
+
+				annotation SummarizationSetBy = Automatic
+
+			column gdp_usd
+				dataType: double
+				sourceProviderType: float
+				lineageTag: 9ec7f97e-9e38-4227-bc5d-42f29d09d5b1
+				sourceLineageTag: gdp_usd
+				summarizeBy: sum
+				sourceColumn: gdp_usd
+
+				annotation SummarizationSetBy = Automatic
+
+				annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			partition DimGDP = entity
+				mode: directLake
+				source
+					entityName: DimGDP
+					schemaName: dbo
+					expressionSource: DatabaseQuery
+
+			annotation PBI_ResultType = Table
+
+		table FactTaxiHourly
+			lineageTag: 2540c41d-c5f1-42e3-a963-466034d30c3c
+			sourceLineageTag: [dbo].[FactTaxiHourly]
+
+			column PULocationID
+				dataType: int64
+				formatString: 0
+				sourceProviderType: int
+				lineageTag: 433ead20-b18e-4686-972e-ac6413fd7f05
+				sourceLineageTag: PULocationID
+				summarizeBy: none
+				sourceColumn: PULocationID
+
+				annotation SummarizationSetBy = Automatic
+
+			column pickup_date_ny
+				dataType: dateTime
+				formatString: General Date
+				sourceProviderType: date
+				lineageTag: 7f264212-dcc9-4b3a-9109-19f6e1648c1f
+				sourceLineageTag: pickup_date_ny
+				summarizeBy: none
+				sourceColumn: pickup_date_ny
+
+				annotation SummarizationSetBy = Automatic
+
+			column hour_ny
+				dataType: int64
+				formatString: 0
+				sourceProviderType: int
+				lineageTag: 0b26a455-25fb-4e31-b9ba-110bbf6baebf
+				sourceLineageTag: hour_ny
+				summarizeBy: sum
+				sourceColumn: hour_ny
+
+				annotation SummarizationSetBy = Automatic
+
+			column hourly_trips
+				dataType: int64
+				formatString: 0
+				sourceProviderType: bigint
+				lineageTag: f11445e4-67c8-42ea-8cce-91e3c29d3225
+				sourceLineageTag: hourly_trips
+				summarizeBy: sum
+				sourceColumn: hourly_trips
+
+				annotation SummarizationSetBy = Automatic
+
+			partition FactTaxiHourly = entity
+				mode: directLake
+				source
+					entityName: FactTaxiHourly
+					schemaName: dbo
+					expressionSource: DatabaseQuery
+
+			annotation PBI_ResultType = Table
+
+		relationship 5275c303-2007-b104-13b3-c62f6091b82c
+			fromColumn: FactTaxiDaily.trip_date
+			toColumn: DimDate.date
+
+		relationship 06d9a7e7-0d0c-461e-d2f7-edf21e97baf5
+			fromColumn: FactTaxiDaily.PULocationID
+			toColumn: DimZone.LocationID
+
+		relationship 6ae79a4b-6b00-7677-6839-25924b4ef67c
+			fromColumn: FactAirQualityDaily.measurement_date
+			toColumn: DimDate.date
+
+		relationship 194c7405-e004-d96a-4f84-68b983f90213
+			fromColumn: FactNO2Daily.measurement_date
+			toColumn: DimDate.date
+
+		relationship 9e36a140-d6b5-0d76-5d1f-5e5096fbcba9
+			fromColumn: DimFX.rate_date
+			toColumn: DimDate.date
+
+		relationship a52ea05a-dabb-68d8-e750-8116932cd4c6
+			fromColumn: FactTaxiHourly.pickup_date_ny
+			toColumn: DimDate.date
+
+		relationship d47241f5-641e-c020-0742-9aa47ea5c1a2
+			fromColumn: FactTaxiHourly.PULocationID
+			toColumn: DimZone.LocationID
+
+		expression DatabaseQuery =
+				let
+				    database = Sql.Database("45DYVGGAO7XU3MSCOLJM7VLRHU-HXGXFOIQH2FEHBZYLA7PMWDNHI.datawarehouse.fabric.microsoft.com", "56d6d422-6ec5-41ff-ad36-060a61c56823")
+				in
+				    database
+			lineageTag: 08a0b739-016d-4744-91b1-fcaa0899ad1d
+
+			annotation PBI_IncludeFutureArtifacts = False
+
+		annotation __PBI_TimeIntelligenceEnabled = 0
+
+		annotation PBI_QueryOrder = ["DatabaseQuery"]
+
+		annotation PBI_ProTooling = ["WebModelingEdit","DaxQueryView_Desktop","TMDLView_Desktop"]
+
