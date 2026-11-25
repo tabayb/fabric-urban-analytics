@@ -242,3 +242,14 @@ secrets/
 
 # Fabric virtual filesystem metadata
 .vfsmeta/
+
+# Fabric pipeline export packages
+pipelines/**/*.zip
+pipelines/**/manifest.json
+
+# Fabric export packages
+pipelines/**/*.zip
+pipelines/**/manifest.json
+
+# Pipeline with potential API credentials
+pipelines/pl_ingest_openaq_no2/
